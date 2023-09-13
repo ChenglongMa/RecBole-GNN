@@ -1,6 +1,7 @@
 import os
 import pickle
 import importlib
+import warnings
 from logging import getLogger
 from recbole.data.utils import load_split_dataloaders, create_samplers, save_split_dataloaders
 from recbole.data.utils import create_dataset as create_recbole_dataset
@@ -86,10 +87,20 @@ def get_model(model_name):
 
 
 def _get_customized_dataloader(config, phase):
+    if phase not in ["train", "valid", "test", "evaluation"]:
+        raise ValueError(
+            "`phase` can only be 'train', 'valid', 'test' or 'evaluation'."
+        )
+    if phase == "evaluation":
+        phase = "test"
+        warnings.warn(
+            "'evaluation' has been deprecated, please use 'valid' or 'test' instead.",
+            DeprecationWarning,
+        )
     if phase == 'train':
         return CustomizedTrainDataLoader
     else:
-        eval_mode = config["eval_args"]["mode"]
+        eval_mode = config["eval_args"]["mode"][phase]
         if eval_mode == 'full':
             return CustomizedFullSortEvalDataLoader
         else:

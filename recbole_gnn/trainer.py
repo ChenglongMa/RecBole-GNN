@@ -75,7 +75,7 @@ class NCLTrainer(Trainer):
                 if verbose:
                     self.logger.info(valid_score_output)
                     self.logger.info(valid_result_output)
-                self.tensorboard.add_scalar('Vaild_score', valid_score, epoch_idx)
+                self.tensorboard.add_scalar('Valid_score', valid_score, epoch_idx)
 
                 if update_flag:
                     if saved:
