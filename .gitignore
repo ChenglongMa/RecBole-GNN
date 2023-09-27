@@ -132,3 +132,5 @@ dmypy.json
 log_tensorboard/
 saved/
 dataset/
+result/
+.vscode/
