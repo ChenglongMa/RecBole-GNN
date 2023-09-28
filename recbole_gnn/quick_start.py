@@ -1,9 +1,66 @@
 import logging
+from collections.abc import MutableMapping
 from logging import getLogger
 from recbole.utils import init_logger, init_seed, set_color
 
 from recbole_gnn.config import Config
 from recbole_gnn.utils import create_dataset, data_preparation, get_model, get_trainer
+
+
+def run(
+    model,
+    dataset,
+    config_file_list=None,
+    config_dict=None,
+    saved=True,
+    nproc=1,
+    world_size=-1,
+    ip="localhost",
+    port="5678",
+    group_offset=0,
+):
+    if nproc == 1 and world_size <= 0:
+        res = run_recbole_gnn(
+            model=model,
+            dataset=dataset,
+            config_file_list=config_file_list,
+            config_dict=config_dict,
+            saved=saved,
+        )
+    else:
+        if world_size == -1:
+            world_size = nproc
+        import torch.multiprocessing as mp
+
+        # Refer to https://discuss.pytorch.org/t/problems-with-torch-multiprocess-spawn-and-simplequeue/69674/2
+        # https://discuss.pytorch.org/t/return-from-mp-spawn/94302/2
+        queue = mp.get_context("spawn").SimpleQueue()
+
+        config_dict = config_dict or {}
+        config_dict.update(
+            {
+                "world_size": world_size,
+                "ip": ip,
+                "port": port,
+                "nproc": nproc,
+                "offset": group_offset,
+            }
+        )
+        kwargs = {
+            "config_dict": config_dict,
+            "queue": queue,
+        }
+
+        mp.spawn(
+            run_recbole_gnns,
+            args=(model, dataset, config_file_list, kwargs),
+            nprocs=nproc,
+            join=True,
+        )
+
+        # Normally, there should be only one item in the queue
+        res = None if queue.empty() else queue.get()
+    return res
 
 
 def run_recbole_gnn(
@@ -79,6 +136,20 @@ def run_recbole_gnn(
         queue.put(result)
 
     return result
+
+
+def run_recbole_gnns(rank, *args):
+    kwargs = args[-1]
+    if not isinstance(kwargs, MutableMapping):
+        raise ValueError(
+            f"The last argument of run_recboles should be a dict, but got {type(kwargs)}"
+        )
+    kwargs["config_dict"] = kwargs.get("config_dict", {})
+    kwargs["config_dict"]["local_rank"] = rank
+    run_recbole_gnn(
+        *args[:3],
+        **kwargs,
+    )
 
 
 def objective_function(config_dict=None, config_file_list=None, saved=True):

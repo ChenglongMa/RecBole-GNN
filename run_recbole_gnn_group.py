@@ -1,64 +1,13 @@
-
-
-
 import argparse
 import os
 
-from recbole_gnn.quick_start import run_recbole_gnn as run_recbole
+from recbole_gnn.quick_start import run
 from recbole.utils import list_to_latex
-
-
-def run(args, model, dataset, config_file_list):
-    if args.nproc == 1 and args.world_size <= 0:
-        res = run_recbole(
-            model=model,
-            dataset=dataset,
-            config_file_list=config_file_list,
-        )
-    else:
-        if args.world_size == -1:
-            args.world_size = args.nproc
-        import torch.multiprocessing as mp
-
-        # Refer to https://discuss.pytorch.org/t/problems-with-torch-multiprocess-spawn-and-simplequeue/69674/2
-        # https://discuss.pytorch.org/t/return-from-mp-spawn/94302/2
-        queue = mp.get_context('spawn').SimpleQueue()
-
-        kwargs = {
-            "config_dict":{
-                "world_size": args.world_size,
-                "ip": args.ip,
-                "port": args.port,
-                "nproc": args.nproc,
-                "offset": args.group_offset,
-            },
-            "queue": queue,
-        }
-        
-        mp.spawn(
-            run_recboles,
-            args=(
-                model,
-                dataset,
-                config_file_list,
-                kwargs
-            ),
-            nprocs=args.nproc,
-            join=True,
-        )
-
-        # Normally, there should be only one item in the queue
-        if not queue.empty():
-            res = queue.get()
-        else:
-            raise ValueError("The main process did not collect any result from the children processes.")
-    return res
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--model_list", "-m", type=str, default="BPR", help="name of models, split by ,"
+        "--model_list", "-m", type=str, default="BPR", help="name of models"
     )
     parser.add_argument(
         "--dataset", "-d", type=str, default="ml-100k", help="name of datasets"
@@ -110,7 +59,16 @@ if __name__ == "__main__":
 
         valid_res_dict = {"Model": model}
         test_res_dict = {"Model": model}
-        result = run(args, model, dataset, config_file_list)
+        result = run(
+            model,
+            args.dataset,
+            config_file_list=config_file_list,
+            nproc=args.nproc,
+            world_size=args.world_size,
+            ip=args.ip,
+            port=args.port,
+            group_offset=args.group_offset,
+        )
         valid_res_dict.update(result["best_valid_result"])
         test_res_dict.update(result["test_result"])
         bigger_flag = result["valid_score_bigger"]
@@ -129,8 +87,8 @@ if __name__ == "__main__":
         bigger_flag=bigger_flag,
         subset_columns=subset_columns,
     )
-
     os.makedirs(os.path.dirname(valid_file), exist_ok=True)
+
     with open(valid_file, "w") as f:
         f.write(tex_valid)
     with open(test_file, "w") as f:
