@@ -133,5 +133,7 @@ log_tensorboard/
 saved/
 dataset/
 result/
+latex/
+
 .vscode/
 .idea
