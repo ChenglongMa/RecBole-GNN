@@ -3,10 +3,8 @@ import os
 
 from recbole_gnn.quick_start import run
 from recbole.utils import list_to_latex
-import torch
 
 if __name__ == "__main__":
-    torch.multiprocessing.set_sharing_strategy('file_system')
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--model_list", "-m", type=str, default="BPR", help="name of models"

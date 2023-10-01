@@ -8,6 +8,7 @@ from recbole.utils import init_logger, init_seed, set_color
 
 from recbole_gnn.config import Config
 from recbole_gnn.utils import create_dataset, data_preparation, get_model, get_trainer
+import torch.multiprocessing as mp
 
 
 def run(
@@ -23,6 +24,8 @@ def run(
         group_offset=0,
 ):
     if nproc == 1 and world_size <= 0:
+        mp.set_sharing_strategy("file_system")
+
         res = run_recbole_gnn(
             model=model,
             dataset=dataset,
@@ -33,7 +36,7 @@ def run(
     else:
         if world_size == -1:
             world_size = nproc
-        import torch.multiprocessing as mp
+        
 
         # Refer to https://discuss.pytorch.org/t/problems-with-torch-multiprocess-spawn-and-simplequeue/69674/2
         # https://discuss.pytorch.org/t/return-from-mp-spawn/94302/2
@@ -53,7 +56,6 @@ def run(
             "config_dict": config_dict,
             "queue": queue,
         }
-        # mp.set_sharing_strategy("file_system")
         mp.spawn(
             run_recbole_gnns,
             args=(model, dataset, config_file_list, kwargs),
