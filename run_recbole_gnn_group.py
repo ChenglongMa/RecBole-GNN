@@ -3,8 +3,10 @@ import os
 
 from recbole_gnn.quick_start import run
 from recbole.utils import list_to_latex
+import torch
 
 if __name__ == "__main__":
+    torch.multiprocessing.set_sharing_strategy('file_system')
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--model_list", "-m", type=str, default="BPR", help="name of models"
@@ -69,6 +71,7 @@ if __name__ == "__main__":
             port=args.port,
             group_offset=args.group_offset,
         )
+        print(f'{model} trained on {args.dataset} Done!')
         valid_res_dict.update(result["best_valid_result"])
         test_res_dict.update(result["test_result"])
         bigger_flag = result["valid_score_bigger"]

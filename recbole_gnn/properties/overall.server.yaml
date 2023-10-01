@@ -1,0 +1,6 @@
+gpu_id: '0,1,2'                     # (str) The id of GPU device(s).
+worker: 56                       # (int) The number of workers processing the data.
+# epochs: 1                     # (int) The number of training epochs.
+topk: [2, 4, 6, 8, 10, 20]
+valid_metric: NDCG@10            # (str) The evaluation metric for early stopping.
+data_path: '/home/sh2/S3629862/projects/mine/RecBole/dataset/'           # (str) The path of input dataset.
