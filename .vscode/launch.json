@@ -1,0 +1,62 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "[3 GPUs] GNN Group",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/run_recbole_gnn_group.py",
+            "args": [
+                "-m",
+                "LESSR,NISER",
+                "--dataset",
+                "test",
+                "--config_files",
+                "./recbole_gnn/properties/overall.dev.yaml",
+                "--nproc",
+                "3",
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "[1 GPUs] GNN",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/run_recbole_gnn.py",
+            "args": [
+                "--model",
+                "LESSR",
+                "--dataset",
+                "test",
+                "--config_files",
+                "./recbole_gnn/properties/overall.dev.yaml",
+                "--nproc",
+                "1",
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "[3 GPUs] GNN",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/run_recbole_gnn.py",
+            "args": [
+                "--model",
+                "LESSR",
+                "--dataset",
+                "test",
+                "--config_files",
+                "./recbole_gnn/properties/overall.dev.yaml",
+                "--nproc",
+                "3",
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": true
+        }
+    ]
+}

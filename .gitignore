@@ -135,6 +135,5 @@ dataset/
 result/
 latex/
 
-.vscode/
 .idea
 temp*
