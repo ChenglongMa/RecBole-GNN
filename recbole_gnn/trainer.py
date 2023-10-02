@@ -74,7 +74,7 @@ class NCLTrainer(Trainer):
                 valid_result_output = set_color('valid result', 'blue') + ': \n' + dict2str(valid_result)
                 if verbose:
                     self.logger.info(valid_score_output)
-                    self.logger.info(valid_result_output)
+                    # self.logger.info(valid_result_output)
                 self.tensorboard.add_scalar('Valid_score', valid_score, epoch_idx)
 
                 if update_flag:
