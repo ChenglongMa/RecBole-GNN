@@ -1,5 +1,3 @@
-gpu_id: '0,1,2'                     # (str) The id of GPU device(s).
-worker: 0                       # (int) The number of workers processing the data.
 epochs: 1                     # (int) The number of training epochs.
 topk: [1, 2, 3]
 valid_metric: NDCG@2            # (str) The evaluation metric for early stopping.

@@ -9,6 +9,7 @@ from recbole.utils import init_logger, init_seed, set_color
 from recbole_gnn.config import Config
 from recbole_gnn.utils import create_dataset, data_preparation, get_model, get_trainer
 import torch.multiprocessing as mp
+import torch
 
 
 def run(
@@ -26,6 +27,10 @@ def run(
     if nproc == 1 and world_size <= 0:
         mp.set_sharing_strategy("file_system")
 
+        config_dict = config_dict or {}
+        config_dict["worker"] = os.cpu_count()
+        print(f'Using {config_dict["worker"]} processes')
+
         res = run_recbole_gnn(
             model=model,
             dataset=dataset,
@@ -34,6 +39,9 @@ def run(
             saved=saved,
         )
     else:
+        nproc = nproc if nproc > 0 else torch.cuda.device_count()
+        print(f'Using {nproc} processes')
+
         if world_size == -1:
             world_size = nproc
         
@@ -50,6 +58,8 @@ def run(
                 "port": port,
                 "nproc": nproc,
                 "offset": group_offset,
+                "worker": 0,
+                "gpu_id": ",".join([str(i) for i in range(nproc)]),
             }
         )
         kwargs = {
@@ -138,12 +148,13 @@ def run_recbole_gnn(
         "valid_score_bigger": config["valid_metric_bigger"],
         "best_valid_result": best_valid_result,
         "test_result": test_result,
-        "topk_results": topk_results,
+        # "topk_results": topk_results,
     }
 
     if config["local_rank"] == 0 and queue is not None:
         print(f'Return result to mp.spawn')
         queue.put(result)
+        print(f'Return result to mp.spawn Done')
 
     if not config["single_spec"]:
         import torch.distributed as dist

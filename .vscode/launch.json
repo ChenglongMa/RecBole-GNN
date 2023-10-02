@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "[3 GPUs] GNN Group",
+            "name": "[n GPUs] GNN Group",
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/run_recbole_gnn_group.py",
@@ -17,7 +17,7 @@
                 "--config_files",
                 "./recbole_gnn/properties/overall.dev.yaml",
                 "--nproc",
-                "3",
+                "-1",
             ],
             "console": "integratedTerminal",
             "justMyCode": true
@@ -29,9 +29,9 @@
             "program": "${workspaceFolder}/run_recbole_gnn.py",
             "args": [
                 "--model",
-                "LESSR",
+                "GRU4Rec",
                 "--dataset",
-                "test",
+                "ml-100k",
                 "--config_files",
                 "./recbole_gnn/properties/overall.dev.yaml",
                 "--nproc",
@@ -41,19 +41,19 @@
             "justMyCode": true
         },
         {
-            "name": "[3 GPUs] GNN",
+            "name": "[n GPUs] GNN",
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/run_recbole_gnn.py",
             "args": [
                 "--model",
-                "LESSR",
+                "GRU4Rec",
                 "--dataset",
-                "test",
+                "ml-100k",
                 "--config_files",
                 "./recbole_gnn/properties/overall.dev.yaml",
                 "--nproc",
-                "3",
+                "-1",
             ],
             "console": "integratedTerminal",
             "justMyCode": true
