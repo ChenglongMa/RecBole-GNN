@@ -1,3 +1,15 @@
 topk: [2, 4, 6, 8, 10, 20]
-valid_metric: NDCG@10            # (str) The evaluation metric for early stopping.
 data_path: '/home/sh2/S3629862/projects/mine/RecBole/dataset/'           # (str) The path of input dataset.
+
+# training and evaluation
+epochs: 500
+train_batch_size: 4096
+eval_batch_size: 2000
+valid_metric: MRR@10
+eval_args:
+  split: {'LS':"valid_and_test"}
+  mode: full
+  order: TO
+train_neg_sample_args: ~
+
+embedding_size: 64
