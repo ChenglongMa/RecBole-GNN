@@ -1,4 +1,6 @@
 import os
+import sys
+
 import pandas as pd
 import time
 import logging
@@ -12,23 +14,27 @@ import torch.multiprocessing as mp
 import torch
 
 
+def is_windows():
+    return sys.platform in ["win32", "cygwin"]
+
+
 def run(
-        model,
-        dataset,
-        config_file_list=None,
-        config_dict=None,
-        saved=True,
-        nproc=1,
-        world_size=-1,
-        ip="localhost",
-        port="5678",
-        group_offset=0,
+    model,
+    dataset,
+    config_file_list=None,
+    config_dict=None,
+    saved=True,
+    nproc=1,
+    world_size=-1,
+    ip="localhost",
+    port="5678",
+    group_offset=0,
 ):
     if nproc == 1 and world_size <= 0:
         mp.set_sharing_strategy("file_system")
 
         config_dict = config_dict or {}
-        config_dict["worker"] = os.cpu_count()
+        config_dict["worker"] = 0 if is_windows() else os.cpu_count()
         print(f'Using {config_dict["worker"]} processes')
 
         res = run_recbole_gnn(
@@ -40,11 +46,10 @@ def run(
         )
     else:
         nproc = nproc if nproc > 0 else torch.cuda.device_count()
-        print(f'Using {nproc} processes')
+        print(f"Using {nproc} processes")
 
         if world_size == -1:
             world_size = nproc
-        
 
         # Refer to https://discuss.pytorch.org/t/problems-with-torch-multiprocess-spawn-and-simplequeue/69674/2
         # https://discuss.pytorch.org/t/return-from-mp-spawn/94302/2
@@ -72,21 +77,21 @@ def run(
             nprocs=nproc,
             join=True,
         )
-        print(f'Training Done')
+        print(f"Training Done")
         # Normally, there should be only one item in the queue
         res = None if queue.empty() else queue.get()
-        print('Collect Result')
-    print('Done')
+        print("Collect Result")
+    print("Done")
     return res
 
 
 def run_recbole_gnn(
-        model=None,
-        dataset=None,
-        config_file_list=None,
-        config_dict=None,
-        saved=True,
-        queue=None,
+    model=None,
+    dataset=None,
+    config_file_list=None,
+    config_dict=None,
+    saved=True,
+    queue=None,
 ):
     r"""A fast running api, which includes the complete process of
     training and testing a model on a specified dataset
@@ -152,9 +157,9 @@ def run_recbole_gnn(
     }
 
     if config["local_rank"] == 0 and queue is not None:
-        print(f'Return result to mp.spawn')
+        print(f"Return result to mp.spawn")
         queue.put(result)
-        print(f'Return result to mp.spawn Done')
+        print(f"Return result to mp.spawn Done")
 
     if not config["single_spec"]:
         import torch.distributed as dist
@@ -180,7 +185,7 @@ def run_recbole_gnns(rank, *args):
 def save_results(config, test_result, topk_results):
     if config["local_rank"] != 0:
         return
-    print(f'Saving Result...')
+    print(f"Saving Result...")
     now = time.strftime("%y%m%d%H%M%S")
     eval_results = []
     model_name = config["model"]
@@ -188,24 +193,24 @@ def save_results(config, test_result, topk_results):
 
     for metric, value in test_result.items():
         eval_results.append([model_name, metric, value])
-    eval_results = pd.DataFrame(eval_results, columns=['model', 'metric', 'value'])
-    result_dir = config['result_dir']
+    eval_results = pd.DataFrame(eval_results, columns=["model", "metric", "value"])
+    result_dir = config["result_dir"]
     os.makedirs(result_dir, exist_ok=True)
 
-    nproc = config['nproc']
+    nproc = config["nproc"]
     filename = os.path.join(
-        result_dir, f'result_{model_name}_{dataset_name}_{now}_{nproc}.csv'
+        result_dir, f"result_{model_name}_{dataset_name}_{now}_{nproc}.csv"
     )
     if os.path.exists(filename):
-        print(f'{filename} already exists!')
+        print(f"{filename} already exists!")
     else:
         eval_results.to_csv(filename, index=False)
 
     filename = os.path.join(
-        result_dir, f'topk_{model_name}_{dataset_name}_{now}_{nproc}.csv'
+        result_dir, f"topk_{model_name}_{dataset_name}_{now}_{nproc}.csv"
     )
     if os.path.exists(filename):
-        print(f'{filename} already exists!')
+        print(f"{filename} already exists!")
     else:
         topk_results.to_csv(filename, index=False)
     print(f"Saving Result Done!")
