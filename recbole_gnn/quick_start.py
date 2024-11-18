@@ -110,6 +110,10 @@ def run_recbole_gnn(
         config_file_list=config_file_list,
         config_dict=config_dict,
     )
+    try:
+        assert config["enable_sparse"] in [True, False, None]
+    except AssertionError:
+        raise ValueError("Your config `enable_sparse` must be `True` or `False` or `None`")
     init_seed(config["seed"], config["reproducibility"])
     # logger initialization
     if config["local_rank"] == 0:
@@ -226,6 +230,10 @@ def objective_function(config_dict=None, config_file_list=None, saved=True):
     """
 
     config = Config(config_dict=config_dict, config_file_list=config_file_list)
+    try:
+        assert config["enable_sparse"] in [True, False, None]
+    except AssertionError:
+        raise ValueError("Your config `enable_sparse` must be `True` or `False` or `None`")
     init_seed(config["seed"], config["reproducibility"])
     logging.basicConfig(level=logging.ERROR)
     dataset = create_dataset(config)
@@ -239,6 +247,7 @@ def objective_function(config_dict=None, config_file_list=None, saved=True):
     test_result = trainer.evaluate(test_data, load_best_model=saved)
 
     return {
+        'model': config['model'],
         "best_valid_score": best_valid_score,
         "valid_score_bigger": config["valid_metric_bigger"],
         "best_valid_result": best_valid_result,

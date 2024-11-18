@@ -4,6 +4,18 @@
 
 -----
 
+*Updates*:
+
+* [Oct 29, 2023] Add [SSL4Rec](https://github.com/RUCAIBox/RecBole-GNN/blob/main/recbole_gnn/model/general_recommender/ssl4rec.py). (https://github.com/RUCAIBox/RecBole-GNN/pull/76, by [@downeykking](https://github.com/downeykking))
+* [Oct 23, 2023] Add sparse tensor support, accelerating LightGCN & NGCF by ~5x, with 1/6 GPU memories. (https://github.com/RUCAIBox/RecBole-GNN/pull/75, by [@downeykking](https://github.com/downeykking))
+* [Oct 20, 2023] Add [DirectAU](https://github.com/RUCAIBox/RecBole-GNN/blob/main/recbole_gnn/model/general_recommender/directau.py). (https://github.com/RUCAIBox/RecBole-GNN/pull/74, by [@downeykking](https://github.com/downeykking))
+* [Oct 16, 2023] Add [XSimGCL](https://github.com/RUCAIBox/RecBole-GNN/blob/main/recbole_gnn/model/general_recommender/xsimgcl.py). (https://github.com/RUCAIBox/RecBole-GNN/pull/72, by [@downeykking](https://github.com/downeykking))
+* [Apr 12, 2023] Add [LightGCL](https://github.com/RUCAIBox/RecBole-GNN/blob/main/recbole_gnn/model/general_recommender/lightgcl.py). (https://github.com/RUCAIBox/RecBole-GNN/pull/63, by [@wending0417](https://github.com/wending0417))
+* [Oct 29, 2022] Adaptation to RecBole 1.1.1. (https://github.com/RUCAIBox/RecBole-GNN/pull/53)
+* [Jun 15, 2022] Add [MultiBehaviorDataset](https://github.com/RUCAIBox/RecBole-GNN/blob/8c61463451b294dce9af2d1939a5e054f7955e0f/recbole_gnn/data/dataset.py#L145). (https://github.com/RUCAIBox/RecBole-GNN/pull/43, by [@Tokkiu](https://github.com/Tokkiu))
+
+-----
+
 **RecBole-GNN** is a library built upon [PyTorch](https://pytorch.org) and [RecBole](https://github.com/RUCAIBox/RecBole) for reproducing and developing recommendation algorithms based on graph neural networks (GNNs). Our library includes algorithms covering three major categories:
 * **General Recommendation** with user-item interaction graphs;
 * **Sequential Recommendation** with session/sequence graphs;
@@ -53,10 +65,15 @@ We list currently supported models according to category:
 
 * **[NGCF](recbole_gnn/model/general_recommender/ngcf.py)** from Wang *et al.*: [Neural Graph Collaborative Filtering](https://arxiv.org/abs/1905.08108) (SIGIR 2019).
 * **[LightGCN](recbole_gnn/model/general_recommender/lightgcn.py)** from He *et al.*: [LightGCN: Simplifying and Powering Graph Convolution Network for Recommendation](https://arxiv.org/abs/2002.02126) (SIGIR 2020).
+* **[SSL4Rec](recbole_gnn/model/general_recommender/ssl4rec.py)** from Yao *et al.*: [Self-supervised Learning for Large-scale Item Recommendations](https://arxiv.org/abs/2007.12865) (CIKM 2021).
 * **[SGL](recbole_gnn/model/general_recommender/sgl.py)** from Wu *et al.*: [Self-supervised Graph Learning for Recommendation](https://arxiv.org/abs/2010.10783) (SIGIR 2021).
 * **[HMLET](recbole_gnn/model/general_recommender/hmlet.py)** from Kong *et al.*: [Linear, or Non-Linear, That is the Question!](https://arxiv.org/abs/2111.07265) (WSDM 2022).
 * **[NCL](recbole_gnn/model/general_recommender/ncl.py)** from Lin *et al.*: [Improving Graph Collaborative Filtering with Neighborhood-enriched Contrastive Learning](https://arxiv.org/abs/2202.06200) (TheWebConf 2022).
+* **[DirectAU](recbole_gnn/model/general_recommender/directau.py)** from Wang *et al.*: [Towards Representation Alignment and Uniformity in Collaborative Filtering](https://arxiv.org/abs/2206.12811) (KDD 2022).
 * **[SimGCL](recbole_gnn/model/general_recommender/simgcl.py)** from Yu *et al.*: [Are Graph Augmentations Necessary? Simple Graph Contrastive Learning for Recommendation](https://arxiv.org/abs/2112.08679) (SIGIR 2022).
+* **[XSimGCL](recbole_gnn/model/general_recommender/xsimgcl.py)** from Yu *et al.*: [XSimGCL: Towards Extremely Simple Graph Contrastive Learning for Recommendation](https://arxiv.org/abs/2209.02544) (TKDE 2023).
+* **[LightGCL](recbole_gnn/model/general_recommender/lightgcl.py)** from Cai *et al.*: [LightGCL: Simple Yet Effective Graph Contrastive Learning for Recommendation
+](https://arxiv.org/abs/2302.08191) (ICLR 2023).
 
 **Sequential Recommendation**:
 
@@ -94,7 +111,7 @@ With the sequential/session graphs preprocessing technique, as well as efficient
 
 ## The Team
 
-RecBole-GNN is developed and maintained by members from [RUCAIBox](http://aibox.ruc.edu.cn/), the main developers are Yupeng Hou ([@hyp1231](https://github.com/hyp1231)), Lanling Xu ([@Sherry-XLL](https://github.com/Sherry-XLL)) and Changxin Tian ([@ChangxinTian](https://github.com/ChangxinTian)).
+RecBole-GNN is initially developed and maintained by members from [RUCAIBox](http://aibox.ruc.edu.cn/), the main developers are Yupeng Hou ([@hyp1231](https://github.com/hyp1231)), Lanling Xu ([@Sherry-XLL](https://github.com/Sherry-XLL)) and Changxin Tian ([@ChangxinTian](https://github.com/ChangxinTian)). We also thank Xinzhou ([@downeykking](https://github.com/downeykking)), Wanli ([@wending0417](https://github.com/wending0417)), and Jingqi ([@Tokkiu](https://github.com/Tokkiu)) for their great contribution! ❤️
 
 ## Acknowledgement
 
