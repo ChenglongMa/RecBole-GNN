@@ -13,3 +13,4 @@ eval_args:
 train_neg_sample_args: ~
 
 embedding_size: 64
+enable_sparse: True           # (bool) Whether to enable sparse optimization.
