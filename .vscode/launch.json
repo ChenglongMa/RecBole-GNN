@@ -5,8 +5,26 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "[1 GPUs] LightGCN",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/run_recbole_gnn.py",
+            "args": [
+                "--model",
+                "LightGCN",
+                "--dataset",
+                "test",
+                "--config_files",
+                "./recbole_gnn/properties/overall.dev.yaml",
+                "--nproc",
+                "1",
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
             "name": "[n GPUs] GNN Group",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/run_recbole_gnn_group.py",
             "args": [
@@ -24,7 +42,7 @@
         },
         {
             "name": "[1 GPUs] GNN",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/run_recbole_gnn.py",
             "args": [
@@ -42,7 +60,7 @@
         },
         {
             "name": "[n GPUs] GNN",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/run_recbole_gnn.py",
             "args": [
