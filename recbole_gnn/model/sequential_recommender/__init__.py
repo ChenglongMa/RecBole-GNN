@@ -1,4 +1,5 @@
 from recbole_gnn.model.sequential_recommender.gcegnn import GCEGNN
+from recbole_gnn.model.sequential_recommender.ourgnn import OurGNN
 from recbole_gnn.model.sequential_recommender.gcsan import GCSAN
 from recbole_gnn.model.sequential_recommender.lessr import LESSR
 from recbole_gnn.model.sequential_recommender.niser import NISER

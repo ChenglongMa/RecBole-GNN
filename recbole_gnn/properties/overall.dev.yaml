@@ -1,4 +1,6 @@
 epochs: 1                     # (int) The number of training epochs.
 topk: [1, 2, 3]
 valid_metric: NDCG@2            # (str) The evaluation metric for early stopping.
-data_path: '/home/sh2/S3629862/projects/mine/RecBole/dataset/'           # (str) The path of input dataset.
+use_gpu: False                   # (bool) Whether or not to use GPU.
+train_batch_size: 3          # (int) The training batch size.
+#data_path: '/home/sh2/S3629862/projects/mine/RecBole/dataset/'           # (str) The path of input dataset.

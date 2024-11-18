@@ -177,3 +177,8 @@ class SEPTTrainer(Trainer):
         else:
             self.model.subgraph_construction()
         return super()._train_epoch(train_data, epoch_idx, loss_func, show_progress)
+
+class GCondTrainer(Trainer):
+
+    def __init__(self, config, backbone):
+        super().__init__(config, backbone)

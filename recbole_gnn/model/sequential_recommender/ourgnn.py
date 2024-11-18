@@ -1,6 +1,6 @@
-# @Time   : 2022/3/22
-# @Author : Yupeng Hou
-# @Email  : houyupeng@ruc.edu.cn
+# @Time   : 2023/10/9
+# @Author : Chenglong Ma
+# @Email  : chenglong.m@outlook.com
 
 r"""
 GCE-GNN
@@ -93,9 +93,9 @@ class GlobalAggregator(nn.Module):
         return output
 
 
-class GCEGNN(SequentialRecommender):
+class OurGNN(SequentialRecommender):
     def __init__(self, config, dataset):
-        super(GCEGNN, self).__init__(config, dataset)
+        super().__init__(config, dataset)
 
         # load parameters info
         self.embedding_size = config["embedding_size"]
@@ -103,12 +103,15 @@ class GCEGNN(SequentialRecommender):
         self.dropout_local = config["dropout_local"]
         self.dropout_global = config["dropout_global"]
         self.dropout_gcn = config["dropout_gcn"]
-        self.device = config["device"]
         self.loss_type = config["loss_type"]
         self.build_global_graph = config["build_global_graph"]
         self.sample_num = config["sample_num"]
         self.hop = config["hop"]
-        self.max_seq_length = dataset.field2seqlen[self.ITEM_SEQ]
+
+        # mcl: add new hyper-parameters
+        self.position_emb_scale = config["position_emb_scale"]
+        self.decay_rate = config["decay_rate"]
+        # end of mcl
 
         # global graph construction
         self.global_graph = None
@@ -119,7 +122,11 @@ class GCEGNN(SequentialRecommender):
         self.item_embedding = nn.Embedding(
             self.n_items, self.embedding_size, padding_idx=0
         )
-        self.pos_embedding = nn.Embedding(self.max_seq_length, self.embedding_size)
+
+        # mcl: update position encoding layers
+        self.max_position_length = self.position_ids(dataset.time_diff)
+        self.pos_embedding = nn.Embedding(self.max_position_length, self.embedding_size)
+        # self.pos_embedding = nn.Embedding(self.max_seq_length, self.embedding_size)
 
         # define layers and loss
         # Aggregator
@@ -144,6 +151,12 @@ class GCEGNN(SequentialRecommender):
 
         self.reset_parameters()
         self.other_parameter_name = ["global_adj", "global_weight"]
+
+    def position_ids(self, time_diff):
+        ids = np.ceil(self.position_emb_scale * np.log(self.decay_rate * time_diff + 1))
+        if isinstance(time_diff, torch.Tensor):
+            return ids.long()
+        return ids.astype(int)
 
     def reset_parameters(self):
         stdv = 1.0 / np.sqrt(self.embedding_size)

@@ -1,0 +1,45 @@
+class GCond:
+    def __init__(self, data, args, device='cuda'):
+        self.data = data
+        self.device = device
+        self.args = args
+        self.model = GCondModel(data, args).to(device)
+        self.optimizer_adj = torch.optim.Adam(self.model.parameters(), lr=args.lr_adj, weight_decay=args.weight_decay)
+        self.optimizer_feat = torch.optim.Adam(self.model.parameters(), lr=args.lr_feat, weight_decay=args.weight_decay)
+        self.optimizer_model = torch.optim.Adam(self.model.parameters(), lr=args.lr_model, weight_decay=args.weight_decay)
+        self.alpha = args.alpha
+        self.debug = args.debug
+        self.sgc = args.sgc
+        self.inner = args.inner
+        self.outer = args.outer
+        self.option = args.option
+        self.save = args.save
+        self.one_step = args.one_step
+        self.label_rate = args.label_rate
+
+    def train(self):
+        self.model.train()
+        for epoch in range(self.args.epochs):
+            self.model.train()
+            self.optimizer_adj.zero_grad()
+            self.optimizer_feat.zero_grad()
+            self.optimizer_model.zero_grad()
+            if self.sgc:
+                if self.inner:
+                    self.model.train_inner()
+                else:
+                    self.model.train_outer()
+            else:
+                self.model.train_gcn()
+            self.optimizer_adj.step()
+            self.optimizer_feat.step()
+            self.optimizer_model.step()
+            if self.debug:
+                self.model.debug()
+            if self.save:
+                self.model.save()
+            if self.one_step:
+                break
+        self.model.eval()
+        self.model.test()
+        return self.model.acc_test

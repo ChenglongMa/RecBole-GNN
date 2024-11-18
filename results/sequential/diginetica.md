@@ -46,9 +46,9 @@ embedding_size: 64
 
 # Dataset Statistics
 
-| Dataset    | #Users | #Items | #Interactions | Sparsity |
-| ---------- | ------ | ------ | ------------- | -------- |
-| diginetica | 72,014 | 29,454 | 580,490       | 99.97%   |
+| Dataset    | #Users         | #Items         | #Interactions | Sparsity |
+|------------|----------------|----------------|---------------|----------|
+| diginetica | $72,014 \pm 1$ | $29,454 \pm 1$ | 580,490       | 99.97%   |
 
 # Evaluation Results
 
@@ -67,15 +67,15 @@ embedding_size: 64
 
 # Hyper-parameters
 
-|                      | Best hyper-parameters                                                     | Tuning range                                                     |
-| -------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| **GRU4Rec** | learning_rate=0.01<br />hidden_size=128<br />dropout_prob=0.3<br />num_layers=1 | learning_rate in [1e-2, 1e-3, 3e-3]<br />num_layers in [1, 2, 3]<br />hidden_size in [128]<br />dropout_prob in [0.1, 0.2, 0.3] |
-| **SASRec**           | learning_rate=0.001<br />n_layers=2<br />attn_dropout_prob=0.2<br />hidden_dropout_prob=0.2 | learning_rate in [0.001, 0.0001]<br />n_layers in [1, 2]<br />hidden_dropout_prob in [0.2, 0.5]<br />attn_dropout_prob in [0.2, 0.5] |
-| **NARM**             | learning_rate=0.001<br />hidden_size=128<br />n_layers=1<br />dropout_probs=[0.25, 0.5] | learning_rate in [0.001, 0.01, 0.03]<br />hidden_size in [128]<br />n_layers in [1, 2]<br />dropout_probs in ['[0.25,0.5]', '[0.2,0.2]', '[0.1,0.2]'] |
-| **SR-GNN**            | learning_rate=0.001<br />step=1                              | learning_rate in [0.01, 0.001, 0.0001]<br />step in [1, 2]    |
-| **GC-SAN**            | learning_rate=0.001<br />step=1                              | learning_rate in [0.01, 0.001, 0.0001]<br />step in [1, 2]    |
-| **NISER+**            | learning_rate=0.001<br />sigma=16                              | learning_rate in [0.01, 0.001, 0.003]<br />sigma in [10, 16, 20]    |
-| **LESSR**            | learning_rate=0.001<br />n_layers=4                              | learning_rate in [0.01, 0.001, 0.003]<br />n_layers in [2, 4]    |
-| **TAGNN**            | learning_rate=0.001                              | learning_rate in [0.01, 0.001, 0.003]<br />train_batch_size=512    |
-| **GCE-GNN**            | learning_rate=0.001<br />dropout_global=0.5                              | learning_rate in [0.01, 0.001, 0.003]<br />dropout_global in [0.2, 0.5]    |
-| **SGNN-HN**            | learning_rate=0.003<br />scale=12<br />step=2                              | learning_rate in [0.01, 0.001, 0.003]<br />scale in [12, 16, 20]<br />step in [2, 4, 6]    |
+|             | Best hyper-parameters                                                                       | Tuning range                                                                                                                                          |
+|-------------|---------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **GRU4Rec** | learning_rate=0.01<br />hidden_size=128<br />dropout_prob=0.3<br />num_layers=1             | learning_rate in [1e-2, 1e-3, 3e-3]<br />num_layers in [1, 2, 3]<br />hidden_size in [128]<br />dropout_prob in [0.1, 0.2, 0.3]                       |
+| **SASRec**  | learning_rate=0.001<br />n_layers=2<br />attn_dropout_prob=0.2<br />hidden_dropout_prob=0.2 | learning_rate in [0.001, 0.0001]<br />n_layers in [1, 2]<br />hidden_dropout_prob in [0.2, 0.5]<br />attn_dropout_prob in [0.2, 0.5]                  |
+| **NARM**    | learning_rate=0.001<br />hidden_size=128<br />n_layers=1<br />dropout_probs=[0.25, 0.5]     | learning_rate in [0.001, 0.01, 0.03]<br />hidden_size in [128]<br />n_layers in [1, 2]<br />dropout_probs in ['[0.25,0.5]', '[0.2,0.2]', '[0.1,0.2]'] |
+| **SR-GNN**  | learning_rate=0.001<br />step=1                                                             | learning_rate in [0.01, 0.001, 0.0001]<br />step in [1, 2]                                                                                            |
+| **GC-SAN**  | learning_rate=0.001<br />step=1                                                             | learning_rate in [0.01, 0.001, 0.0001]<br />step in [1, 2]                                                                                            |
+| **NISER+**  | learning_rate=0.001<br />sigma=16                                                           | learning_rate in [0.01, 0.001, 0.003]<br />sigma in [10, 16, 20]                                                                                      |
+| **LESSR**   | learning_rate=0.001<br />n_layers=4                                                         | learning_rate in [0.01, 0.001, 0.003]<br />n_layers in [2, 4]                                                                                         |
+| **TAGNN**   | learning_rate=0.001                                                                         | learning_rate in [0.01, 0.001, 0.003]<br />train_batch_size=512                                                                                       |
+| **GCE-GNN** | learning_rate=0.001<br />dropout_global=0.5                                                 | learning_rate in [0.01, 0.001, 0.003]<br />dropout_global in [0.2, 0.5]                                                                               |
+| **SGNN-HN** | learning_rate=0.003<br />scale=12<br />step=2                                               | learning_rate in [0.01, 0.001, 0.003]<br />scale in [12, 16, 20]<br />step in [2, 4, 6]                                                               |
