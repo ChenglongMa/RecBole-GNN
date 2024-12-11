@@ -105,6 +105,14 @@ class GeneralGraphDataset(RecBoleDataset):
 
         return edge_index, edge_weight
 
+    def get_random_edge_index(self, num_edges):
+        num_ratings = self.inter_feat.shape[0]
+        edge_index = torch.randint(0, num_ratings, (2, num_edges), dtype=torch.long)
+        # convert to undirected graph and remove self-loops and duplicate edges
+        edge_index = torch.unique(edge_index[:, edge_index[0] != edge_index[1]], dim=-1)
+        edge_index = torch.cat([edge_index, edge_index.flip(0)], dim=-1)
+        edge_weight = torch.tensor(np.random.rand(edge_index.shape[1]), dtype=torch.float)
+        return edge_index, edge_weight
 
 class SessionGraphDataset(SequentialDataset):
     def __init__(self, config):
@@ -320,7 +328,7 @@ class SocialDataset(GeneralGraphDataset):
     """
     def __init__(self, config):
         super().__init__(config)
-    
+
     def _get_field_from_config(self):
         super()._get_field_from_config()
 
@@ -421,7 +429,7 @@ class SocialDataset(GeneralGraphDataset):
 
     def get_norm_net_adj_mat(self, row_norm=False):
         r"""Get the normalized socail matrix of users and users.
-        Construct the square matrix from the social network data and 
+        Construct the square matrix from the social network data and
         normalize it using the laplace matrix.
         .. math::
             A_{hat} = D^{-0.5} \times A \times D^{-0.5}
