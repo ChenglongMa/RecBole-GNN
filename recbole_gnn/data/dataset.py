@@ -106,7 +106,7 @@ class GeneralGraphDataset(RecBoleDataset):
         return edge_index, edge_weight
 
     def get_random_edge_index(self, num_edges):
-        num_ratings = self.inter_feat.shape[0]
+        num_ratings = self.inter_num
         edge_index = torch.randint(0, num_ratings, (2, num_edges), dtype=torch.long)
         # convert to undirected graph and remove self-loops and duplicate edges
         edge_index = torch.unique(edge_index[:, edge_index[0] != edge_index[1]], dim=-1)

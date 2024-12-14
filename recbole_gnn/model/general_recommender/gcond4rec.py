@@ -13,8 +13,13 @@ class GCond4Rec(GeneralGraphRecommender):
 
     def __init__(self, config, dataset):
         super().__init__(config, dataset)
+
+        self.TIME_FIELD = config["TIME_FIELD"]  # i.e., dataset.time_field, e.g., 'timestamp'
+        self.RATING_FIELD = config["RATING_FIELD"]  # e.g., 'rating'
+
         self.hidden_dims: list = config["hidden_dims"]
-        self.n_time_buckets: int = config["n_time_buckets"]  # TODO: fix this
+        # self.n_time_buckets: int = config["discretization"]["timestamp"]["bucket"]
+        self.n_time_buckets: int = config["num_time_buckets"]
         self.K: int = config["K"]
         self.num_edges: int = config["num_edges"]
 
@@ -59,8 +64,6 @@ class GCond4Rec(GeneralGraphRecommender):
         item_features = self.item_embedding(item_ids)
         time_bucket_features = self.time_bucket_embedding(time_buckets)
         x = torch.cat([user_features, item_features, time_bucket_features], dim=-1)
-        # edge_index = self.edge_index.long()
-        # print(self.edge_index.max())
 
         for layer in self.layers:
             if isinstance(layer, MessagePassing):
@@ -70,7 +73,7 @@ class GCond4Rec(GeneralGraphRecommender):
         return x
 
     def calculate_loss(self, interaction):
-        ratings = interaction[self.LABEL]
+        ratings = interaction[self.RATING_FIELD]
         predictions = self.predict(interaction)
 
         return self.loss(predictions, ratings)
@@ -78,7 +81,7 @@ class GCond4Rec(GeneralGraphRecommender):
     def predict(self, interaction):
         user_ids = interaction[self.USER_ID]
         item_ids = interaction[self.ITEM_ID]
-        time_buckets = interaction[self.TIME_BUCKET_ID]
+        time_buckets = interaction[self.TIME_FIELD]
         return self.forward(user_ids, item_ids, time_buckets, self.edge_index, self.edge_weight)
 
     def full_sort_predict(self, interaction):
