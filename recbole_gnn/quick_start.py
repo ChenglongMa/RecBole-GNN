@@ -146,11 +146,12 @@ def run_recbole_gnn(
     test_result = trainer.evaluate(
         test_data, load_best_model=saved, show_progress=config["show_progress"]
     )
-    topk_results = test_result.pop("topk_results")
+    if "topk_results" in test_result:
+        topk_results = test_result.pop("topk_results")
+        save_results(config, test_result, topk_results)
 
     logger.info(set_color("best valid ", "yellow") + f": {best_valid_result}")
     logger.info(set_color("test result", "yellow") + f": {test_result}")
-    save_results(config, test_result, topk_results)
 
     result = {
         "best_valid_score": best_valid_score,

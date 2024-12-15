@@ -105,14 +105,23 @@ class GeneralGraphDataset(RecBoleDataset):
 
         return edge_index, edge_weight
 
-    def get_random_edge_index(self, num_edges):
+    def get_random_edge_index(self, num_edges=None):
         num_ratings = self.inter_num
+        num_edges = num_edges or (num_ratings * (num_ratings - 1) // 2)
         edge_index = torch.randint(0, num_ratings, (2, num_edges), dtype=torch.long)
         # convert to undirected graph and remove self-loops and duplicate edges
         edge_index = torch.unique(edge_index[:, edge_index[0] != edge_index[1]], dim=-1)
         edge_index = torch.cat([edge_index, edge_index.flip(0)], dim=-1)
         edge_weight = torch.tensor(np.random.rand(edge_index.shape[1]), dtype=torch.float)
         return edge_index, edge_weight
+
+# class GCond4RecDataset(GeneralGraphDataset):
+#
+#     def __init__(self, config):
+#         super().__init__(config)
+#         self.num_edges: int = config["num_edges"]
+#         self.edge_index, self.edge_weight = self.get_random_edge_index(self.num_edges)
+
 
 class SessionGraphDataset(SequentialDataset):
     def __init__(self, config):

@@ -1,5 +1,3 @@
 hidden_dims: [24, 12]
 activation_function: leaky_relu
 K: 2
-num_edges: 500
-num_time_buckets: 10000
